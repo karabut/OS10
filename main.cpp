@@ -15,38 +15,23 @@ int main(int argc, char* argv[]) {
 //       cout << i << " " << argv[i] << endl;
 //    }
 //
-    int waitConst = -1;
-    pid_t process = fork();
-    if (process == FAIL) {
-        perror("Error in fork()");
+    char command[COMMAXLEN];
+    strcpy(command, argv[1]);
+
+    if (system(command) == FAIL) {
+        perror("Error in system()");
     }
 
-    if (process != CHILDPROCESS) {
-        int check = wait(&waitConst);
+    int waitConst = -1;
+    int check = wait(&waitConst);
 
-        if(check == FAIL){
+    if(check == FAIL){
             perror("Error in wait");
         }
 
         int exitCode = WEXITSTATUS(waitConst);
 
-        if(exitCode != 0){
-            printf("Child process ended unsuccessfully \n");
-        }
-
         printf("return code оf child = %d \n", exitCode);
         printf("Parent process is on\n");
+ }
 
-    } else {
-
-        int execlRet = DEFAULT;
-
-        execlRet = execl(argv[2], argv[1], NULL);
-
-        if(execlRet == FAIL)
-        {
-            perror("Error in cat");
-            return EXIT_FAILURE;
-        }
-    }
-}
