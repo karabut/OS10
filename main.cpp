@@ -1,4 +1,5 @@
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,28 +11,48 @@
 
 
 int main(int argc, char* argv[]) {
-//
-//    for(int i = 0; i < argc; i ++){
-//       cout << i << " " << argv[i] << endl;
-//    }
-//
-    char command[COMMAXLEN];
-    strcpy(command, argv[1]);
 
-    if (system(command) == FAIL) {
-        perror("Error in system()");
+    if(argc !=3 ){
+        printf("enter 2 args\n");
+        return 0;
     }
 
     int waitConst = -1;
-    int check = wait(&waitConst);
+    pid_t process = fork();
 
-    if(check == FAIL){
+    if (process == FAIL) {
+        perror("Error in fork()");
+    }
+
+    if (process != CHILDPROCESS) {
+        int check = wait(&waitConst);
+
+        if(check == FAIL){
             perror("Error in wait");
         }
 
-        int exitCode = WEXITSTATUS(waitConst);
+        int exitCode1 = WIFEXITED(waitConst);
 
-        printf("return code оf child = %d \n", exitCode);
+        if( exitCode1 > 0) {
+            int exitCode = WEXITSTATUS(waitConst);
+            printf("return code оf child = %d \n", exitCode);
+        } else {
+
+            printf("child process ended with errors \n");
+        }
         printf("Parent process is on\n");
- }
 
+
+    } else {
+
+        int execlRet = DEFAULT;
+
+        execlRet = execl(argv[2], argv[1], NULL);
+
+        if(execlRet == FAIL)
+        {
+            perror("Error in cat");
+            return EXIT_FAILURE;
+        }
+    }
+}
