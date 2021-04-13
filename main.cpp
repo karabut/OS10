@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
 
         int execlRet = DEFAULT;
 
-        execlRet = execl(argv[2], argv[1], NULL);
+        execlRet = execvp(argv[1], &argv[1]);
 
         if(execlRet == FAIL)
         {
