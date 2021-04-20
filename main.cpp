@@ -12,7 +12,7 @@
 
 int main(int argc, char* argv[]) {
 
-    if(argc !=3 ){
+    if(argc < 3 ){
         printf("enter 2 args\n");
         return 0;
     }
